@@ -4,6 +4,7 @@ import com.lionzxy.greenmod.utils.BarrelRecipeItem;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
@@ -38,7 +39,7 @@ public class BarrelTile extends TileEntity {
                         return true;
                     }
                     else if(items[i].getFluid().isFluidEqual(fluidStack) && items[i].getFluid().amount + fluidStack.amount <=getMaxCapacity()){
-                        items[i].addAmountForFluid(fluidStack.amount);
+                        items[i].addAmount(fluidStack.amount);
                         player.inventory.setInventorySlotContents(player.inventory.currentItem, FluidContainerRegistry.drainFluidContainer(currentItem));
                         return true;
                     }
@@ -68,6 +69,42 @@ public class BarrelTile extends TileEntity {
         return false;
     }
 
+    public void actionWithItem(EntityPlayer player, World world){
+        if(player.isSneaking() && player.getCurrentEquippedItem() == null){
+            for(int i = 0; i < items.length; i++)
+                if(items[i] != null && items[i].isItem()){
+                    world.spawnEntityInWorld(new EntityItem(world, player.posX + 0.5, player.posY + 0.5, player.posZ + 0.5, new ItemStack(items[i].getItem().getItem())));
+                    removeItem(new ItemStack(items[i].getItem().getItem()));
+                    return;
+                }
+        }else {
+            if(player.getCurrentEquippedItem() != null){
+                for(int i = 0; i < items.length; i++)
+                    if(items[i] == null) {
+                        items[i] = new BarrelRecipeItem(player.getCurrentEquippedItem(), player.getCurrentEquippedItem().stackSize);
+                        player.inventory.setInventorySlotContents(player.inventory.currentItem, null);
+                        return;
+                    }else if(items[i].getItem().equals(player.getCurrentEquippedItem().getItem())){
+                        if((items[i].getAmount() + player.getCurrentEquippedItem().stackSize) <= getMax()){
+                            items[i].addAmount(player.getCurrentEquippedItem().stackSize);
+                            player.inventory.setInventorySlotContents(player.inventory.currentItem,null);
+                            return;
+                        }else if(items[i].getAmount() != getMax()){
+                            int b = player.getCurrentEquippedItem().stackSize - (getMax() - items[i].getAmount());
+                            items[i].addAmount(b);
+                            player.inventory.setInventorySlotContents(player.inventory.currentItem, new ItemStack(player.getCurrentEquippedItem().getItem(), player.getCurrentEquippedItem().stackSize - b));
+                            return;
+                        }
+
+                    }
+
+
+
+            }
+        }
+
+    }
+
     @Override
     public void writeToNBT(NBTTagCompound tag){
         super.writeToNBT(tag);
@@ -76,8 +113,9 @@ public class BarrelTile extends TileEntity {
             if(items[i] != null){
                 if(items[i].isItem()){
                     NBTTagCompound nbt = new NBTTagCompound();
-                    nbt.setBoolean("Itemli",true);
+                    nbt.setBoolean("Itemli", true);
                     items[i].getItem().writeToNBT(nbt);
+                    nbt.setInteger("Amount", items[i].getAmount());
                     nbtTagList.appendTag(nbt);
                 }
                 if(items[i].isFluid()){
@@ -99,7 +137,7 @@ public class BarrelTile extends TileEntity {
             if(!nbtTagList.getCompoundTagAt(i).getBoolean("Itemli"))
                 items[i]=new BarrelRecipeItem(FluidStack.loadFluidStackFromNBT(nbtTagList.getCompoundTagAt(i)));
             else
-                items[i]=new BarrelRecipeItem(ItemStack.loadItemStackFromNBT(nbtTagList.getCompoundTagAt(i)));
+                items[i]=new BarrelRecipeItem(ItemStack.loadItemStackFromNBT(nbtTagList.getCompoundTagAt(i)),nbtTagList.getCompoundTagAt(i).getInteger("StackSize"));
         }
     }
 
@@ -108,11 +146,32 @@ public class BarrelTile extends TileEntity {
         return 100000;
     }
 
+    public int getMax(){
+        return 1024;
+    }
+
     public void removeItem(FluidStack fluidStack){
         for(int i = 0; i < items.length; i++)
             if(items[i] != null && items[i].isFluid() && items[i].getFluid().getUnlocalizedName().equalsIgnoreCase(fluidStack.getUnlocalizedName()))
-                if(items[i].getFluid().amount == fluidStack.amount)
-                    items[i]=null;
-                else items[i].removeAmountFromFluid(fluidStack.amount);
+                if(items[i].getFluid().amount == fluidStack.amount) {
+                    items[i] = null;
+                    return;
+                }else {
+                    items[i].removeAmount(fluidStack.amount);
+                    return;}
     }
+
+    public void removeItem(ItemStack itemStack){
+        for(int i = 0; i < items.length; i++)
+            if(items[i] != null && items[i].isItem() && items[i].getItem().equals(itemStack.getItem()))
+                if(items[i].getAmount() > itemStack.stackSize){
+                    items[i].removeAmount(itemStack.stackSize);
+                    return;
+                } else {
+                    items[i] = null;
+                    return;
+                }
+    }
+
+
 }

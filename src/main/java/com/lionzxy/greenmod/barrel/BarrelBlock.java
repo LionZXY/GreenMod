@@ -24,9 +24,13 @@ public class BarrelBlock extends BlockContainer{
     public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int p_149727_6_, float p_149727_7_, float p_149727_8_, float p_149727_9_)
     {
         BarrelTile tileEntity = (BarrelTile) world.getTileEntity(x,y,z);
-        if(player.getCurrentEquippedItem() != null && (player.getCurrentEquippedItem().getItem() instanceof  IFluidContainerItem || FluidContainerRegistry.isContainer(player.getCurrentEquippedItem())))
-            tileEntity.fillLiquid(player.getCurrentEquippedItem(), player, world);
-        return false;
+        if(player.getCurrentEquippedItem() != null)
+            if((player.getCurrentEquippedItem().getItem() instanceof  IFluidContainerItem || FluidContainerRegistry.isContainer(player.getCurrentEquippedItem()))){
+                tileEntity.fillLiquid(player.getCurrentEquippedItem(), player, world);
+                return true;}
+        tileEntity.actionWithItem(player,world);
+
+        return true;
     }
 
 

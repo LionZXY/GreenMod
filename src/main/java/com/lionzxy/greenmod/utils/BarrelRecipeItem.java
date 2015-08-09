@@ -10,14 +10,19 @@ import net.minecraftforge.fluids.FluidStack;
  */
 public class BarrelRecipeItem {
     private ItemStack item;
+    private int amount;
     private FluidStack fluid;
 
-    public BarrelRecipeItem(ItemStack item){
+    public BarrelRecipeItem(ItemStack item,int stackSize){
         this.item = item;
+        amount = stackSize;
     }
 
     public BarrelRecipeItem(FluidStack fluid){
         this.fluid = fluid;
+    }
+    public BarrelRecipeItem(){
+
     }
     public boolean checkToItem(FluidStack fluidIn){
         if(this.fluid != null)
@@ -28,8 +33,8 @@ public class BarrelRecipeItem {
 
     public boolean checkToItem(ItemStack item){
         if(this.item != null)
-            return this.item.getItem() == item.getItem() &&
-                   this.item.stackSize >= item.stackSize ;
+            return this.item == item &&
+                   this.amount >= item.stackSize ;
         return false;
     }
 
@@ -53,12 +58,20 @@ public class BarrelRecipeItem {
         return this.fluid;
     }
 
-    public void addAmountForFluid(int i){
-        this.fluid.amount = this.fluid.amount + i;
+    public void addAmount(int i){
+        if(!isNull())
+            if (isFluid())
+                this.fluid.amount = this.fluid.amount + i;
+            else if (isItem())
+                this.amount = this.amount + i;
     }
 
-    public void removeAmountFromFluid(int i){
-        this.fluid.amount = this.fluid.amount - i;
+    public void removeAmount(int i){
+        if(!isNull())
+            if(isFluid())
+                this.fluid.amount = this.fluid.amount - i;
+            else if(isItem())
+                this.amount = this.amount- i;
     }
 
     public boolean isFluid(){
@@ -67,13 +80,17 @@ public class BarrelRecipeItem {
         return false;
     }
 
+    public int getAmount(){
+        return amount;
+    }
     public boolean checkToItem(BarrelRecipeItem barrelRecipeItem){
         if(barrelRecipeItem.isItem() && this.isItem() && this.checkToItem(barrelRecipeItem.getItem()))
             return true;
         if(barrelRecipeItem.isFluid() && this.isFluid() && this.checkToItem(barrelRecipeItem.getFluid()))
             return true;
-        if(barrelRecipeItem.isNull() && this.isNull())
+        if((barrelRecipeItem.isNull() && this.isNull()) || (barrelRecipeItem == null && barrelRecipeItem.isNull()))
             return true;
         return false;
     }
+
 }
