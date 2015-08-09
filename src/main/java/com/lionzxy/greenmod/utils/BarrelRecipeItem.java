@@ -11,19 +11,18 @@ import net.minecraftforge.fluids.FluidStack;
 public class BarrelRecipeItem {
     private ItemStack item;
     private FluidStack fluid;
-    private int needFluid;
 
     public BarrelRecipeItem(ItemStack item){
         this.item = item;
     }
 
-    public BarrelRecipeItem(FluidStack fluid, int needFluid){
+    public BarrelRecipeItem(FluidStack fluid){
         this.fluid = fluid;
-        this.needFluid = needFluid;
     }
-    public boolean checkToItem(FluidStack fluid){
+    public boolean checkToItem(FluidStack fluidIn){
         if(this.fluid != null)
-            return this.fluid.getFluid() == fluid.getFluid() ;
+            return this.fluid.getFluid().getName().equalsIgnoreCase(fluid.getFluid().getName()) &&
+                   fluidIn.amount >= this.fluid.amount ;
         return false;
     }
 
@@ -54,8 +53,12 @@ public class BarrelRecipeItem {
         return this.fluid;
     }
 
-    public int getNeedFluid(){
-        return needFluid;
+    public void addAmountForFluid(int i){
+        this.fluid.amount = this.fluid.amount + i;
+    }
+
+    public void removeAmountFromFluid(int i){
+        this.fluid.amount = this.fluid.amount - i;
     }
 
     public boolean isFluid(){

@@ -24,7 +24,7 @@ public class ItemConfig {
     }
 
     private static void addAllAxe(){
-        for(int i = 0; i < MainConfig.getConfig().getInt("Axe Items","general",1,0,256,""); i++){
+        for(int i = 0; i < MainConfig.getConfig().getInt("Axe Items","general",0,0,256,""); i++){
             GreenMod.items.add(new BasicAxe(
                     MainConfig.getConfig().getString("Name","Axe."+i,"Axes."+i,""),
                     MainConfig.getConfig().getString("TextureName","Axes."+i, Version.MODID + ":Axe."+i,""),
@@ -39,7 +39,7 @@ public class ItemConfig {
 
     private static void addAllHoe(){
         String type = "Hoe";
-        for(int i = 0; i < MainConfig.getConfig().getInt(type+" Items","general",1,0,256,""); i++){
+        for(int i = 0; i < MainConfig.getConfig().getInt(type+" Items","general",0,0,256,""); i++){
             GreenMod.items.add(new BasicHoe(
                     MainConfig.getConfig().getString("Name",type+"."+i,type+"s."+i,""),
                     MainConfig.getConfig().getString("TextureName",type+"s."+i,Version.MODID + ":"+type+"."+i,""),
@@ -54,7 +54,7 @@ public class ItemConfig {
 
     private static void addAllPickaxe(){
         String type = "Pickaxe";
-        for(int i = 0; i < MainConfig.getConfig().getInt(type+" Items","general",1,0,256,""); i++){
+        for(int i = 0; i < MainConfig.getConfig().getInt(type+" Items","general",0,0,256,""); i++){
             GreenMod.items.add(new BasicPickaxe(
                     MainConfig.getConfig().getString("Name",type+"."+i,type+"s."+i,""),
                     MainConfig.getConfig().getString("TextureName",type+"s."+i,Version.MODID + ":"+type+"."+i,""),
@@ -69,7 +69,7 @@ public class ItemConfig {
 
     private static void addAllSword(){
         String type = "Sword";
-        for(int i = 0; i < MainConfig.getConfig().getInt(type+" Items","general",1,0,256,""); i++){
+        for(int i = 0; i < MainConfig.getConfig().getInt(type+" Items","general",0,0,256,""); i++){
             GreenMod.items.add(new BasicSword(
                     MainConfig.getConfig().getString("Name",type+"s."+i,type+"."+i,""),
                     MainConfig.getConfig().getString("TextureName",type+"s."+i,Version.MODID + ":"+type+"."+i,""),
@@ -84,7 +84,7 @@ public class ItemConfig {
 
     private static void addAllShears(){
         String type = "Shears";
-        for(int i = 0; i < MainConfig.getConfig().getInt(type+" Items","general",1,0,256,""); i++){
+        for(int i = 0; i < MainConfig.getConfig().getInt(type+" Items","general",0,0,256,""); i++){
             GreenMod.items.add(new BasicShears(
                     MainConfig.getConfig().getInt("Max Damage",type+"."+i,1024,0,999999999,""),
                     MainConfig.getConfig().getString("Name",type+"."+i,type+"."+i,""),
