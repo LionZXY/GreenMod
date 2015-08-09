@@ -6,6 +6,8 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.util.Constants;
+import net.minecraftforge.fluids.Fluid;
+import net.minecraftforge.fluids.FluidStack;
 
 /**
  * Created by nikit on 09.08.2015.
@@ -30,7 +32,7 @@ public class BarrelTile extends TileEntity{
                 if(items[i].isFluid()){
                     NBTTagCompound nbt = new NBTTagCompound();
                     nbt.setBoolean("Item",false);
-                    nbt.setString("Fluid",items[i].getFluid().toString());
+                    items[i].getFluid().writeToNBT(nbt);
                     nbt.setInteger("FluidAmount",items[i].getNeedFluid());
                     nbtTagList.appendTag(nbt);
                 }
