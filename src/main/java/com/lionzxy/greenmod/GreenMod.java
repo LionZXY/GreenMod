@@ -27,6 +27,7 @@ public class GreenMod {
         GreenModTabs.Init();
         ItemConfig.addAll();
         GameRegistry.registerBlock(barrel, "barrel");
-        GameRegistry.registerTileEntity(BarrelTile.class,"barreltile");
+        GameRegistry.registerTileEntity(BarrelTile.class, "barreltile");
+        Recipe.addAllRecipe();
     }
 }

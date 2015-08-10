@@ -5,6 +5,8 @@ import net.minecraft.item.ItemStack;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
 
+import javax.annotation.Nullable;
+
 /**
  * Created by nikit on 09.08.2015.
  */
@@ -74,6 +76,14 @@ public class BarrelRecipeItem {
                 this.amount = this.amount- i;
     }
 
+    public String getName(){
+        if(isFluid())
+            return fluid.getFluid().getName();
+        else if(isItem())
+               return item.getDisplayName();
+        return null;
+    }
+
     public boolean isFluid(){
         if(item == null && fluid != null)
             return true;
@@ -81,14 +91,18 @@ public class BarrelRecipeItem {
     }
 
     public int getAmount(){
+        if(isFluid())
+            return getFluid().amount;
         return amount;
     }
-    public boolean checkToItem(BarrelRecipeItem barrelRecipeItem){
-        if(barrelRecipeItem.isItem() && this.isItem() && this.checkToItem(barrelRecipeItem.getItem()))
+    public boolean checkToItem(@Nullable BarrelRecipeItem barrelRecipeItem){
+        if(isNull() && barrelRecipeItem == null)
             return true;
-        if(barrelRecipeItem.isFluid() && this.isFluid() && this.checkToItem(barrelRecipeItem.getFluid()))
+        if(!isNull() && barrelRecipeItem == null)
+            return false;
+        if((isItem() && barrelRecipeItem.isItem()) && ((item.getItem() == barrelRecipeItem.getItem().getItem()) && item.stackSize >= barrelRecipeItem.getItem().stackSize))
             return true;
-        if((barrelRecipeItem.isNull() && this.isNull()) || (barrelRecipeItem == null && barrelRecipeItem.isNull()))
+        if((isFluid() && barrelRecipeItem.isFluid()) && (fluid.getFluid() == barrelRecipeItem.getFluid().getFluid() && fluid.amount <= barrelRecipeItem.getFluid().amount))
             return true;
         return false;
     }
